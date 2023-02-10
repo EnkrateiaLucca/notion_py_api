@@ -53,6 +53,17 @@ def get_idea_from_content_board(db_data, content_board_tag = "Idea"):
     return content_list
 
 
+def get_tasks_from_db(db_data):
+    """
+    Gets a task from my task database.
+    """
+    length_of_table = len(db_data["results"])
+    content_list = []
+    for i in range(length_of_table):
+        if len(db_data["results"][i]["properties"]["Task"]["title"])!=0:
+            print(db_data["results"][i]["properties"]["Task"]["title"][0]["plain_text"])        
+
+
 def get_content_title_idx(db_data, content_title):
     length_db = len(db_data["results"])
     for i in range(length_db):
@@ -97,6 +108,16 @@ def update_page_property(page_data,pageId,headers,property_name, property_type, 
     res = requests.request("PATCH", updateURL, headers=headers, data=updated_page)
     print(res.text)
     print("Content Board updated!")
+
+
+def check_task(task_page_data, task_page_id, headers, check_status=True):
+    updateURL = f'https://api.notion.com/v1/pages/{task_page_id}'
+    task_page_data["properties"]["Check"]["checkbox"]=check_status
+    task_name = task_page_data["properties"]["Task"]["title"][0]["plain_text"]
+    updated_task_page = json.dumps(task_page_data)
+    res = requests.request("PATCH", updateURL, headers=headers, data=updated_task_page)
+    #print(res.text)
+    print(f"Task: {task_name} ✅")
 
 
 # def createPage(databaseId, headers):

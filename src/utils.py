@@ -8,7 +8,6 @@ def readDatabase(databaseId, headers):
     res = requests.request("POST", readUrl, headers=headers)
     data = res.json()
     print(res.status_code)
-    # print(res.text)
 
     with open('./db.json', 'w', encoding='utf8') as f:
         json.dump(data, f, ensure_ascii=False)
@@ -61,7 +60,8 @@ def get_tasks_from_db(db_data):
     content_list = []
     for i in range(length_of_table):
         if len(db_data["results"][i]["properties"]["Task"]["title"])!=0:
-            print(db_data["results"][i]["properties"]["Task"]["title"][0]["plain_text"])        
+            task_name = db_data["results"][i]["properties"]["Task"]["title"][0]["plain_text"]
+            print(f"{i} - {task_name}")
 
 
 def get_content_title_idx(db_data, content_title):
@@ -120,16 +120,36 @@ def check_task(task_page_data, task_page_id, headers, check_status=True):
     print(f"Task: {task_name} ✅")
 
 
-# def createPage(databaseId, headers):
+def create_task(task_title, tasks_databaseId, headers):
+    update_DB_URL = f'https://api.notion.com/v1/databases/{tasks_databaseId}'
+    update_PAGE_URL = "https://api.notion.com/v1/pages"
+    # Define the properties of the new page
+    new_page = {
+        "Task": {
+            "title": [
+                {
+                    "text": {
+                        "content": f"{task_title}"
+                    }
+                }
+            ]
+        }
+    }
 
-#     createUrl = 'https://api.notion.com/v1/pages'
-    
-#     newPageData = {}
+    # Define the parent of the new page
+    parent = {
+        "database_id": tasks_databaseId
+    }
 
-#     data = json.dumps(newPageData)
-#     # print(str(uploadData))
+    # Combine the new page properties and parent into a request body
+    data = {
+        "parent": parent,
+        "properties": new_page
+    }
 
-#     res = requests.request("POST", createUrl, headers=headers, data=data)
+    # Send the request to create the new page
+    response = requests.post(update_PAGE_URL, headers=headers, data=json.dumps(data))
 
-#     print(res.status_code)
-#     print(res.text)
+    # Print the response content and status code
+    print(response.status_code)
+

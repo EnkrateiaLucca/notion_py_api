@@ -35,5 +35,3 @@ python ./notion_py_cli.py --uncheck_task <task num in the database>
 
 
 
-
-

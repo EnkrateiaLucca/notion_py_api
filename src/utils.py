@@ -57,7 +57,6 @@ def get_tasks_from_db(db_data):
     Gets a task from my task database.
     """
     length_of_table = len(db_data["results"])
-    content_list = []
     for i in range(length_of_table):
         if len(db_data["results"][i]["properties"]["Task"]["title"])!=0:
             task_name = db_data["results"][i]["properties"]["Task"]["title"][0]["plain_text"]
